@@ -50,18 +50,26 @@ class StartNewGame extends React.Component {
         })
     }
 
+    handleResultSelect = (e, { result }) => this.setState({ searchTerm: result.title })
+
+
     //UPDATE SEARCH TERM 
     updateSearch = termToSearch => {
         const { allPlayers, searchTerm} = this.state
         const playersArray = allPlayers
+        const re = new RegExp(_.escapeRegExp(searchTerm), 'i')
+        const isMatch = (result) => re.test(result.name)
+
 
         this.setState({
             searchTerm: termToSearch
         })
 
         this.setState({
-            results: playersArray.filter(player => 
-                player.name.toLowerCase().includes(searchTerm.toLowerCase())
+            results: 
+            
+            playersArray.filter(player => 
+                player.name.toLowerCase().includes(searchTerm.toLowerCase()), isMatch
                 )
         })
 
@@ -107,7 +115,7 @@ class StartNewGame extends React.Component {
 
     //CONDITIONAL RENDERING - EITHER WELCOMES USER OR DISPLAYS NEW GAME
     render (){
-        const { game, word, playerName, allPlayers, isLoading, results, searchTerm } = this.state
+        const { game, word, playerName, allPlayers, results, searchTerm } = this.state
         const { newGameHandleSubmit, handleChange, handleSearch } = this
         if (game.length > 0 ){
         return (
