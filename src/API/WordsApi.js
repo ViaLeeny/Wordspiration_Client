@@ -1,10 +1,8 @@
-const API_URL = 'localhost:3001/words'
+const API_URL = 'http://localhost:3001'
 
 //FETCH WORDS FROM WORDS API (GET REQUEST)
-export function getWords(){
-    return fetch(`${API_URL}`, {
-        method: "POST"
-    })
+export function getWords () {
+    return fetch(`${API_URL}/words`)
     .then(resp => resp.json())
 }
 
