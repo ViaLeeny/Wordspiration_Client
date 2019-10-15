@@ -2,7 +2,9 @@ const API_URL = 'localhost:3001/words'
 
 //FETCH WORDS FROM WORDS API (GET REQUEST)
 export function getWords(){
-    return fetch(`${API_URL}`)
+    return fetch(`${API_URL}`, {
+        method: "POST"
+    })
     .then(resp => resp.json())
 }
 

@@ -3,6 +3,7 @@ import { Button, Form } from 'semantic-ui-react'
 import '../App.css';
 import GameMode from './GameMode'
 import getWords from '../API/WordsApi'
+import { getPlayers } from '../API/PlayersApi'
 
 
 class StartNewGame extends React.Component {
@@ -11,21 +12,43 @@ class StartNewGame extends React.Component {
     //SETS THE STATE OF THE GAME
     state = {
         game: [],
-        PlayerName: [],
+        all_Players: [],
+        playerName: [],
         word: []
+    }
+
+    //GET ALL PLAYERS 
+    setPlayers = () => {
+        getPlayers ()
+        .then(data => {
+            this.setState({
+                all_Players: data
+            })
+        })
     }
 
     //STARTS A NEW GAME (CHANGES STATE & CREATES NEW GAME ON BACKEND)
     newGameHandleSubmit = (e) => {
+       //PREVENT DEFAULT REFRESH 
         e.preventDefault()
         console.log('OMG A NEW GAME, WORD & PLAYER WERE FOUND OR CREATED')
 
+        //GET RANDOM WORD FROM API
         getWords()
         .then(data => {
             this.setState({
                 word: data.text
             })
         })
+
+        //CREATE NEW GAME & FIND OR CREATE PLAYER AND WORD
+
+        //INCREASE GAME STATE BY ONE TO RENDER GAME MODE
+    }
+
+    //THIS SHOULD HAPPEN AT START OF THE APP
+    componentDidMount(){
+        this.setPlayers()
     }
 
     //CONDITIONAL RENDERING - EITHER WELCOMES USER OR DISPLAYS NEW GAME
