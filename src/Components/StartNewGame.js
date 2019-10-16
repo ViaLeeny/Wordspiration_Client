@@ -12,11 +12,12 @@ class StartNewGame extends React.Component {
 
     //SETS THE STATE OF THE GAME
     state = {
-        game: [],
+        game: 0,
+        gameScore: 0,
         allPlayers: [],
         playerName: '',
         all_words: [], 
-        word: ''
+        gameWord: ''
     }
 
     //GET ALL PLAYERS FROM DATABASE
@@ -47,40 +48,40 @@ class StartNewGame extends React.Component {
     }
 
     //STARTS A NEW GAME (CHANGES STATE & CREATES NEW GAME ON BACKEND)
-    handleSubmit = (e) => {
-       //PREVENT DEFAULT REFRESH 
-        e.preventDefault()
-        console.log(`handle submit function`)
-
-        //GET RANDOM WORD & CREATE GAME
-        this.getRandomWord()
+    handleSubmit = () => {
+        
+        //CALL FUNCTION TO START GAME
+        this.startGame()
     }
 
- //GET RANDOM WORD
- getRandomWord = () => {
-    const { all_words } = this.state
-    const gameWord = _.sample(all_words)
+    //GET RANDOM WORD
+    getRandomWord = () => {
+        const { all_words, word } = this.state
+        const gameWord = _.sample(all_words)
 
-    this.setState({
-        word: gameWord.text
-    }) 
-    console.log(`set state to ${this.state.word}`)
-    this.startGame()
-}
-
-startGame = () => {
-
-    const { playerName, word } = this.state
-    newGame_Api(playerName, word)
-
-    //INCREASE GAME STATE BY ONE TO RENDER GAME MODE
-    .then(
         this.setState({
-            game: 1
-        })
-    )
-    console.log(`create game in backend with ${this.state.word}`)
-}
+            word: gameWord.text
+        }) 
+        this.startGame()
+    }
+
+    //GET RANDOM WORD & CREATE GAME
+    startGame = () => {
+
+        const { playerName, all_words } = this.state
+
+        const randomWord = _.sample(all_words)
+        const word = randomWord.text
+        newGame_Api(playerName, word)
+
+        //INCREASE GAME STATE TO ONE TO RENDER GAME MODE
+        .then(
+            this.setState({
+                game: 1, 
+                gameWord: word
+            })
+        )
+    }
 
 
     //THIS SHOULD HAPPEN AT START OF THE APP
@@ -91,18 +92,22 @@ startGame = () => {
 
     //CONDITIONAL RENDERING - EITHER WELCOMES USER OR DISPLAYS NEW GAME
     render (){
-        const { game, all_words, word, playerName, allPlayers} = this.state
+        const { game, gameScore, all_words, playerName, allPlayers, gameWord} = this.state
         const { handleSubmit, handleChange } = this
         if (game > 0 ){
         return (
-            <GameMode /> 
+            <GameMode 
+                gameScore={gameScore}
+                playerName={playerName}
+                gameWord={gameWord}
+            /> 
             
         )} else {
             return(
                 <div className= "App">
                  <header className="App-header">
                     <h3> WELCOME TO </h3>
-                    <h1> W O R D S P I R A T I O N ! </h1>
+                    <h1> W O R D S P I R A T I O N </h1>
 
                     <Form onSubmit = {handleSubmit}>
                         <Form.Input name="playerName"  value= {playerName} label='Name' placeholder='Find or Create Player' onChange = {handleChange} />

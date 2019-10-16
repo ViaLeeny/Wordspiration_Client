@@ -1,6 +1,6 @@
 // const API_URL = 'http://localhost:3001'
-const proxyurl = "https://cors-anywhere.herokuapp.com/";
-const url = "https://app.linkedin-reach.io/words"
+// const proxyurl = "https://cors-anywhere.herokuapp.com/";
+// const url = "https://app.linkedin-reach.io/words"
 
 //FETCH WORDS FROM WORDS API (GET REQUEST)
 export function getWords () {
