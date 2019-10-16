@@ -1,25 +1,22 @@
 import React from 'react'
-import { Button, Form, Search, Grid, Header } from 'semantic-ui-react'
+import { Button, Form } from 'semantic-ui-react'
 import _ from 'lodash'
 import '../App.css';
 import GameMode from './GameMode'
 import { getWords } from '../API/WordsApi'
 import { getPlayers } from '../API/PlayersApi'
+import { newGame_Api } from '../API/GameApi'
 // import WordContainer from '../Container/WordContainer'
 
-
 class StartNewGame extends React.Component {
-
-
 
     //SETS THE STATE OF THE GAME
     state = {
         game: [],
         allPlayers: [],
-        playerName: [],
-        word: [], 
-        searchTerm: '', 
-        results: []
+        playerName: '',
+        all_words: [], 
+        word: ''
     }
 
     //GET ALL PLAYERS FROM DATABASE
@@ -37,10 +34,9 @@ class StartNewGame extends React.Component {
         getWords () 
         .then(data => {
             this.setState({
-                word: data
+                all_words: data
             })
         } )
-        .then(console.log(this.state.word))
     }
 
     //PLAYER NAME INPUT FIELD CHANGES AS USER TYPES TO SEARCH OR CREATE
@@ -50,62 +46,42 @@ class StartNewGame extends React.Component {
         })
     }
 
-    handleResultSelect = (e, { result }) => this.setState({ searchTerm: result.title })
-
-
-    //UPDATE SEARCH TERM 
-    updateSearch = termToSearch => {
-        const { allPlayers, searchTerm} = this.state
-        const playersArray = allPlayers
-        const re = new RegExp(_.escapeRegExp(searchTerm), 'i')
-        const isMatch = (result) => re.test(result.name)
-
-
-        this.setState({
-            searchTerm: termToSearch
-        })
-
-        this.setState({
-            results: 
-            
-            playersArray.filter(player => 
-                player.name.toLowerCase().includes(searchTerm.toLowerCase()), isMatch
-                )
-        })
-
-    }
-
-    //SEARCH FOR A PLAYER IN THE LIST OF PLAYERS
-    handleSearch = (_, { value }) => {
-        this.updateSearch(value)
-    }
-
-    // getFilteredPlayers = () => {
-    //     const { allPlayers, searchTerm } = this.state 
-    //     const playersArray = allPlayers
-    //     playersArray.filter(player => 
-    //                 player.name.toLowerCase().includes(searchTerm.toLowerCase())
-    //                 )
-    //         console.log(playersArray)
-    //     this.setState({
-    //         results: playersArray
-    //     })
-
-    // }
-
-
-
     //STARTS A NEW GAME (CHANGES STATE & CREATES NEW GAME ON BACKEND)
-    newGameHandleSubmit = (e) => {
+    handleSubmit = (e) => {
        //PREVENT DEFAULT REFRESH 
         e.preventDefault()
-        console.log('OMG A NEW GAME, WORD & PLAYER WERE FOUND OR CREATED')
+        console.log(`handle submit function`)
 
-
-        //CREATE NEW GAME & FIND OR CREATE PLAYER AND WORD
-
-        //INCREASE GAME STATE BY ONE TO RENDER GAME MODE
+        //GET RANDOM WORD & CREATE GAME
+        this.getRandomWord()
     }
+
+ //GET RANDOM WORD
+ getRandomWord = () => {
+    const { all_words } = this.state
+    const gameWord = _.sample(all_words)
+
+    this.setState({
+        word: gameWord.text
+    }) 
+    console.log(`set state to ${this.state.word}`)
+    this.startGame()
+}
+
+startGame = () => {
+
+    const { playerName, word } = this.state
+    newGame_Api(playerName, word)
+
+    //INCREASE GAME STATE BY ONE TO RENDER GAME MODE
+    .then(
+        this.setState({
+            game: 1
+        })
+    )
+    console.log(`create game in backend with ${this.state.word}`)
+}
+
 
     //THIS SHOULD HAPPEN AT START OF THE APP
     componentDidMount(){
@@ -115,9 +91,9 @@ class StartNewGame extends React.Component {
 
     //CONDITIONAL RENDERING - EITHER WELCOMES USER OR DISPLAYS NEW GAME
     render (){
-        const { game, word, playerName, allPlayers, results, searchTerm } = this.state
-        const { newGameHandleSubmit, handleChange, handleSearch } = this
-        if (game.length > 0 ){
+        const { game, all_words, word, playerName, allPlayers} = this.state
+        const { handleSubmit, handleChange } = this
+        if (game > 0 ){
         return (
             <GameMode /> 
             
@@ -128,21 +104,8 @@ class StartNewGame extends React.Component {
                     <h3> WELCOME TO </h3>
                     <h1> W O R D S P I R A T I O N ! </h1>
 
-                    <Form onSubmit = {newGameHandleSubmit}>
-                    <Grid>
-                        <Grid.Column width={20}>
-                        <Search
-                            onResultSelect={this.handleResultSelect}
-                            onSearchChange={_.debounce(handleSearch, 500, {
-                            leading: true,
-                            })}
-                            results={results}
-                            value={searchTerm}
-                           
-                        />
-                        </Grid.Column>
-                    </Grid>
-                        <Form.Input name="playerName"  value= {playerName} label='Name' placeholder='Create Player' onChange = {handleChange} />
+                    <Form onSubmit = {handleSubmit}>
+                        <Form.Input name="playerName"  value= {playerName} label='Name' placeholder='Find or Create Player' onChange = {handleChange} />
                         <Button size='huge' color='green' >New Game</Button>
                     </Form>
 
@@ -158,7 +121,7 @@ class StartNewGame extends React.Component {
 
                 <h1>All Words</h1>
                 <h3> {
-                     word.map( thisWord => 
+                     all_words.map( thisWord => 
                         thisWord.text
                         )
                  }
