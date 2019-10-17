@@ -39,6 +39,8 @@ class UserLetterInput extends React.Component {
             //Reset letter selection
             this.resetLetterSelection()
         }
+
+
     }
 
     render () {
