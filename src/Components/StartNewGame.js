@@ -49,7 +49,7 @@ class StartNewGame extends React.Component {
 
     //STARTS A NEW GAME (CHANGES STATE & CREATES NEW GAME ON BACKEND)
     handleSubmit = () => {
-        
+
         //CALL FUNCTION TO START GAME
         this.startGame()
     }
