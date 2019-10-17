@@ -1,17 +1,25 @@
 import React from 'react'
 import GameWordContainer from '../Container/GameWordContainer'
-import { Input, Placeholder } from 'semantic-ui-react'
+import { Input, Placeholder, Divider, Header, Icon } from 'semantic-ui-react'
 import UserLetterInput from './UserLetterInput'
+import GameWon from './GameWon'
+import GameLost from './GameLost'
+import Graveyard from './Graveyard'
+import { getGame } from '../API/GameApi'
+
 
 class GameMode extends React.Component {
 
     //SETS THE STATE OF THE GAME
     state = {
+        gameScore: 0,
         gameWordLength: 0,
-        gameWordLettersArray: [], 
+        gameWordLettersArray: [],
+        distinctLettersArray: [],
         guessedLetters: [],
         incorrectlyGuessedLetters: [],
-        totalGuessesLeft: 6
+        totalGuessesLeft: 6, 
+        currentGameId: 0
     }
 
 
@@ -19,10 +27,12 @@ class GameMode extends React.Component {
     setWordToLettersArray = () => {
         const { gameWord } = this.props
         const lettersArray = gameWord.split("")
+        const distinctLetters = [...new Set(lettersArray)]
         const lettersArrayLength = lettersArray.length
         this.setState({
             gameWordLength: lettersArrayLength,
-            gameWordLettersArray: lettersArray
+            gameWordLettersArray: lettersArray, 
+            distinctLettersArray: distinctLetters
         })
     }
 
@@ -36,6 +46,11 @@ class GameMode extends React.Component {
         this.setState({
             guessedLetters: placeholderArray
         })
+
+        this.setState({
+            currentGameId: this.state.games[0].id
+        })
+        
     }
 
     //CHANGE STATE OF INCORRECT GUESSES
@@ -53,31 +68,68 @@ class GameMode extends React.Component {
 
     }
 
+    //GET ALL GAMES AT START OF A NEW GAME
+    setGames = () => {
+        getGame () 
+        .then(data => {
+            this.setState({
+                games: data.reverse()
+            })
+        } )
+
+    }
+
     //RUNS AT THE START OF RENDERING THIS PAGE
     componentDidMount() {
-
         this.setWordToLettersArray()
+        this.setGames()
     }
 
     render() {
-        const { gameWordLength, gameWordLettersArray, guessedLetters, totalGuessesLeft, incorrectlyGuessedLetters, letterSelected } = this.state
-        const { gameScore, playerName, gameWord } = this.props
+        const { gameScore, gameWordLength, gameWordLettersArray, guessedLetters, totalGuessesLeft, incorrectlyGuessedLetters, distinctLettersArray, currentGameId } = this.state
+        const { playerName, gameWord } = this.props
         const { letterGuessedCorrectly, letterGuessedIncorrectly } = this
 
+        if (totalGuessesLeft === 0){
+            return (
+                <GameLost /> 
+            )
+           
+        } else if ( guessedLetters.length === distinctLettersArray.length){
+            return (
+                <GameWon 
+                totalGuessesLeft={totalGuessesLeft}
+                currentGameId={currentGameId}
+                /> 
+            )
+        } else {
         return(
             <div>
         
              <div className= "App gameOn2">
                 <header className="App-header gameOn1">
                     <h1> W O R D S P I R A T I O N </h1>
-                    <h5 className= "gameOn-instructions-header">Instructions</h5>
+                    <React.Fragment>
+                    <Divider horizontal>
+                        <Header as='h4'>
+                            <Icon name='tag' />
+                            Instructions
+                        </Header>
+                    </Divider> 
+                    </React.Fragment>                   
                     <h5 className= "gameOn-instructions">Guess a letter. 
                     If the letter is part of the word, each of that letter in the word will be revealed to you. 
                     If you guess wrong, your letter will be placed in the graveyard. 
                     You have 6 tries to guess the entire word correctly. 
                     Otherwise, GAME OVER! </h5>
-
-                    <h3> Game on {this.props.playerName}!</h3>
+                    <React.Fragment>
+                    <Divider horizontal>
+                        <Header as='h4'>
+                            <Icon name='bar chart' />
+                            Game on {this.props.playerName}!
+                        </Header>
+                    </Divider>
+                    </React.Fragment>
                     <h1>{totalGuessesLeft}</h1> 
                     <h4>Guesses Left</h4>
                     <br></br> 
@@ -99,15 +151,16 @@ class GameMode extends React.Component {
                                     gameWordLength={gameWordLength}
                                     guessedLetters={guessedLetters}
                     /> 
-                    <h1>GraveYard</h1>
-                    {incorrectlyGuessedLetters.map( word => <h3>{word}</h3>)}
+                    
+                    <Graveyard incorrectlyGuessedLetters={incorrectlyGuessedLetters}/>
+    
 
 
                 </header>
              </div>
              
             </div>
-        )
+        )}
     }
 
 }

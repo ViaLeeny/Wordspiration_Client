@@ -5,25 +5,28 @@ import '../App.css';
 import GameMode from './GameMode'
 import { getWords } from '../API/WordsApi'
 import { getPlayers } from '../API/PlayersApi'
-import { newGame_Api } from '../API/GameApi'
+import { newGame_Api, getGame } from '../API/GameApi'
 // import WordContainer from '../Container/WordContainer'
 
 class StartNewGame extends React.Component {
 
     //SETS THE STATE OF THE GAME
     state = {
+        games: 0,
         game: 0,
-        gameScore: 0,
         allPlayers: [],
         playerName: '',
         all_words: [], 
-        gameWord: ''
+        gameWord: '', 
+        gameId: 0,
     }
 
     //GET ALL PLAYERS FROM DATABASE
     setPlayers = () => {
         getPlayers ()
         .then(data => {
+
+
             this.setState({
                 allPlayers: data
             })
@@ -54,23 +57,13 @@ class StartNewGame extends React.Component {
         this.startGame()
     }
 
-    //GET RANDOM WORD
-    getRandomWord = () => {
-        const { all_words, word } = this.state
-        const gameWord = _.sample(all_words)
-
-        this.setState({
-            word: gameWord.text
-        }) 
-        this.startGame()
-    }
-
     //GET RANDOM WORD & CREATE GAME
     startGame = () => {
 
         const { playerName, all_words } = this.state
 
         const randomWord = _.sample(all_words)
+    
         const word = randomWord.text
         newGame_Api(playerName, word)
 
@@ -92,12 +85,11 @@ class StartNewGame extends React.Component {
 
     //CONDITIONAL RENDERING - EITHER WELCOMES USER OR DISPLAYS NEW GAME
     render (){
-        const { game, gameScore, all_words, playerName, allPlayers, gameWord} = this.state
+        const { game, all_words, playerName, allPlayers, gameWord } = this.state
         const { handleSubmit, handleChange } = this
         if (game > 0 ){
         return (
             <GameMode 
-                gameScore={gameScore}
                 playerName={playerName}
                 gameWord={gameWord}
             /> 
