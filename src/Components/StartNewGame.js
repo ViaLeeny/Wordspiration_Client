@@ -62,9 +62,7 @@ class StartNewGame extends React.Component {
 
         const { playerName, all_words } = this.state
 
-        const randomWord = _.sample(all_words)
-    
-        const word = randomWord.text
+        const word = all_words.text
         newGame_Api(playerName, word)
 
         //INCREASE GAME STATE TO ONE TO RENDER GAME MODE
@@ -116,13 +114,13 @@ class StartNewGame extends React.Component {
                  }
                  </h3>
 
-                <h1>All Words</h1>
+                {/* <h1>All Words</h1>
                 <h3> {
                      all_words.map( thisWord => 
                         thisWord.text
                         )
                  }
-                 </h3>
+                 </h3> */}
             
             
             </div>
