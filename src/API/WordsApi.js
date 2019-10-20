@@ -2,7 +2,7 @@
 // const proxyurl = "https://cors-anywhere.herokuapp.com/";
 // const url = "https://app.linkedin-reach.io/words"
 
-//FETCH WORDS FROM WORDS API (GET REQUEST)
+//FETCH SAMPLE WORD FROM BACKEND (GET REQUEST)
 export function getWords () {
     return fetch("http://localhost:3001/words")
     .then(resp => resp.json())
