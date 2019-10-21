@@ -6,6 +6,7 @@ import GameMode from './GameMode'
 import { getWords } from '../API/WordsApi'
 import { getPlayers } from '../API/PlayersApi'
 import { newGame_Api, getGame } from '../API/GameApi'
+
 // import WordContainer from '../Container/WordContainer'
 
 class StartNewGame extends React.Component {
@@ -17,6 +18,7 @@ class StartNewGame extends React.Component {
         allPlayers: [],
         playerName: '',
         all_words: [], 
+        all_games: [],
         gameWord: '', 
         gameId: 0,
     }
@@ -39,6 +41,16 @@ class StartNewGame extends React.Component {
         .then(data => {
             this.setState({
                 all_words: data
+            })
+        } )
+    }
+
+    //GET ALL GAMES AT START OF A NEW GAME
+    setGames = () => {
+        getGame () 
+        .then(data => {
+            this.setState({
+                all_games: data.reverse()
             })
         } )
     }
@@ -79,17 +91,21 @@ class StartNewGame extends React.Component {
     componentDidMount(){
         this.setPlayers()
         this.setWords()
+        this.setGames()
     }
 
     //CONDITIONAL RENDERING - EITHER WELCOMES USER OR DISPLAYS NEW GAME
     render (){
-        const { game, all_words, playerName, allPlayers, gameWord } = this.state
+        const { game, all_words, playerName, allPlayers, all_games, gameWord } = this.state
         const { handleSubmit, handleChange } = this
         if (game > 0 ){
         return (
             <GameMode 
                 playerName={playerName}
                 gameWord={gameWord}
+                handleSubmit={handleSubmit}
+                handleChange={handleChange}
+                all_games={all_games}
             /> 
             
         )} else {
