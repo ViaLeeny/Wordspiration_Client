@@ -19,7 +19,8 @@ class GameMode extends React.Component {
         guessedLetters: [],
         incorrectlyGuessedLetters: [],
         totalGuessesLeft: 6, 
-        currentGameId: 0
+        currentGameId: 0, 
+        games: []
     }
 
 
@@ -39,7 +40,6 @@ class GameMode extends React.Component {
     //CHANGE STATE OF CORRECT GUESSES 
     letterGuessedCorrectly = (letter) => {
         const placeholderArray = this.state.guessedLetters
-        console.log(placeholderArray)
 
         const newlyChangedArray = placeholderArray.push(letter)
 
@@ -48,7 +48,7 @@ class GameMode extends React.Component {
         })
 
         this.setState({
-            currentGameId: this.state.games[0].id
+            currentGameId: this.props.all_games[0].id
         })
         
     }
@@ -68,31 +68,27 @@ class GameMode extends React.Component {
 
     }
 
-    //GET ALL GAMES AT START OF A NEW GAME
-    setGames = () => {
-        getGame () 
-        .then(data => {
-            this.setState({
-                games: data.reverse()
-            })
-        } )
 
-    }
 
     //RUNS AT THE START OF RENDERING THIS PAGE
     componentDidMount() {
         this.setWordToLettersArray()
-        this.setGames()
     }
 
     render() {
-        const { gameScore, gameWordLength, gameWordLettersArray, guessedLetters, totalGuessesLeft, incorrectlyGuessedLetters, distinctLettersArray, currentGameId } = this.state
-        const { playerName, gameWord } = this.props
+        const { gameScore, gameWordLength, gameWordLettersArray, guessedLetters, totalGuessesLeft, incorrectlyGuessedLetters, distinctLettersArray, currentGameId, games } = this.state
+        const { playerName, gameWord, handleChange, handleSubmit, all_games } = this.props
         const { letterGuessedCorrectly, letterGuessedIncorrectly } = this
 
         if (totalGuessesLeft === 0){
             return (
-                <GameLost /> 
+                <GameLost
+                playerName={playerName}
+                handleSubmit={handleSubmit}
+                handleChange={handleChange}
+                all_games={all_games}
+                
+                /> 
             )
            
         } else if ( guessedLetters.length === distinctLettersArray.length){
@@ -100,6 +96,7 @@ class GameMode extends React.Component {
                 <GameWon 
                 totalGuessesLeft={totalGuessesLeft}
                 currentGameId={currentGameId}
+                all_games={all_games}
                 /> 
             )
         } else {

@@ -14,14 +14,15 @@ export function newGame_Api(playerName, word){
 }
 
 //UPDATE THE GAME SCORE WHEN A PLAYER WINS THE GAME
-export function updateGameScore_Api(game_id, score){
+export function updateGameScore_Api(game_id, player_id, word_id, score){
+    console.log('hello edit')
     return fetch(`${API_URL}/games/${game_id}`, {
         method: "PATCH", 
         headers: {
             "Content-Type": "application/json",
             Accepts: "application/json"
         },
-        body: JSON.stringify({score})
+        body: JSON.stringify({player_id, word_id, score})
     })
     .then(resp => resp.json())
 }
