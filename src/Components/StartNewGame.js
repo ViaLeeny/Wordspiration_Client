@@ -122,13 +122,13 @@ class StartNewGame extends React.Component {
 
                  </header>
 
-                <h1>All Players</h1>
+                {/* <h1>All Players</h1>
                 <h3> {
                      allPlayers.map( thisPlayer => 
                         thisPlayer.name
                         )
                  }
-                 </h3>
+                 </h3> */}
 
                 {/* <h1>All Words</h1>
                 <h3> {
