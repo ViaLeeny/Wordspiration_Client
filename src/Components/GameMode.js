@@ -118,7 +118,7 @@ class GameMode extends React.Component {
                     <Divider horizontal>
                         <Header as='h4'>
                             <Icon name='tag' />
-                            Instructions
+                            Game Instructions
                         </Header>
                     </Divider> 
                     </React.Fragment>                   
