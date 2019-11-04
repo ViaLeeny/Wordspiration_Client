@@ -126,7 +126,7 @@ class GameMode extends React.Component {
                     If the letter is part of the word, each of that letter in the word will be revealed to you. 
                     If you guess wrong, your letter will be placed in the graveyard. 
                     You have 6 tries to guess the entire word correctly. 
-                    Otherwise, GAME OVER! </h5>
+                    Otherwise, it is GAME OVER!! </h5>
                     <React.Fragment>
                     <Divider horizontal>
                         <Header as='h4'>
