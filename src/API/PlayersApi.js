@@ -6,6 +6,12 @@ export function getPlayers () {
     .then(resp => resp.json())
 }
 
+export function getTopPlayers() {
+    return fetch(`${API_URL}/players/leadership`)
+    .then(resp => resp.json)
+}
+
 export default {
     getPlayers,
+    getTopPlayers, 
 }

@@ -6,6 +6,7 @@ import GameWon from './GameWon'
 import GameLost from './GameLost'
 import Graveyard from './Graveyard'
 import { getGame } from '../API/GameApi'
+import { getTopPlayers } from '../API/PlayersApi'
 
 
 class GameMode extends React.Component {
@@ -21,6 +22,7 @@ class GameMode extends React.Component {
         totalGuessesLeft: 6, 
         currentGameId: 0, 
         games: []
+        
     }
 
 
@@ -65,6 +67,10 @@ class GameMode extends React.Component {
             incorrectlyGuessedLetters: placeholder,
             totalGuessesLeft: newlyChangedGuessesLeft
         })
+    }
+
+    getLeadershipData = () => {
+        getTopPlayers()
 
     }
 
@@ -73,11 +79,12 @@ class GameMode extends React.Component {
     //RUNS AT THE START OF RENDERING THIS PAGE
     componentDidMount() {
         this.setWordToLettersArray()
+        this.getLeadershipData()
     }
 
     render() {
         const { gameScore, gameWordLength, gameWordLettersArray, guessedLetters, totalGuessesLeft, incorrectlyGuessedLetters, distinctLettersArray, currentGameId, games } = this.state
-        const { playerName, gameWord, handleChange, handleSubmit, all_games } = this.props
+        const { playerName, gameWord, handleChange, handleSubmit, all_games, setLeadershipBoard } = this.props
         const { letterGuessedCorrectly, letterGuessedIncorrectly } = this
 
         if (totalGuessesLeft === 0){
@@ -97,6 +104,7 @@ class GameMode extends React.Component {
                 totalGuessesLeft={totalGuessesLeft}
                 currentGameId={currentGameId}
                 all_games={all_games}
+
                 /> 
             )
         } else {
@@ -114,7 +122,7 @@ class GameMode extends React.Component {
                         </Header>
                     </Divider> 
                     </React.Fragment>                   
-                    <h5 className= "gameOn-instructions">Guess a letter. 
+                    <h5 className= "gameOn-instructions">Guess a letter by typing it into the input box. 
                     If the letter is part of the word, each of that letter in the word will be revealed to you. 
                     If you guess wrong, your letter will be placed in the graveyard. 
                     You have 6 tries to guess the entire word correctly. 
