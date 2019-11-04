@@ -113,7 +113,7 @@ class StartNewGame extends React.Component {
                 <div className= "App">
                  <header className="App-header">
                     <h3> WELCOME TO </h3>
-                    <h1> W O R D S P I R A T I O N </h1>
+                    <h1> W O R D S P I R A T I O N ! </h1>
 
                     <Form onSubmit = {handleSubmit}>
                         <Form.Input name="playerName"  value= {playerName} label='Name' placeholder='Find or Create Player' onChange = {handleChange} />
