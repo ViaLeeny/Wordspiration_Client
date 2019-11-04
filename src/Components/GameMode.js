@@ -136,7 +136,7 @@ class GameMode extends React.Component {
                     </Divider>
                     </React.Fragment>
                     <h1>{totalGuessesLeft}</h1> 
-                    <h4>Guesses Left</h4>
+                    <h4># of Guesses Left</h4>
                     <br></br> 
 
                     <UserLetterInput 
